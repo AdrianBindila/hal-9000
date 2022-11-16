@@ -3,32 +3,32 @@
 #include "thread.h"
 #include "thread_internal.h"
 
-static volatile long gNumberOfThreads;
+static volatile DWORD gNumberOfThreads;
 
 STATUS
 (__cdecl _ThreadLpTest)(
 	IN_OPT PVOID Context
 	)
 {
-	int numberOfChildren = (int)Context;
-	int i;
+	DWORD numberOfChildren = (DWORD)(QWORD)Context;
 
 	PTHREAD* childHandles = ExAllocatePoolWithTag(
-		PoolAllocateZeroMemory,
-		sizeof(THREAD) * numberOfChildren,
+		PoolAllocatePanicIfFail | PoolAllocateZeroMemory,
+		sizeof(PTHREAD) * numberOfChildren,
 		HEAP_THREAD_TAG, 0);
 
-	for (i = 0; i < numberOfChildren; i++)
+	STATUS status = STATUS_SUCCESS;
+	for (DWORD i = 0; i < numberOfChildren; i++)
 	{
 		PTHREAD thread;
 		char thName[MAX_PATH];
 		snprintf(thName, MAX_PATH, "ThreadLp-%d",
 			_InterlockedIncrement(&gNumberOfThreads));
 
-		STATUS status = ThreadCreate(thName,
+		status = ThreadCreate(thName,
 			ThreadPriorityDefault,
 			_ThreadLpTest,
-			numberOfChildren - 1,
+			(PVOID)(QWORD)(numberOfChildren - 1),
 			&thread);
 
 		if (!SUCCEEDED(status))
@@ -40,12 +40,12 @@ STATUS
 			childHandles[i] = thread;
 			ThreadCloseHandle(thread);
 		}
-		for (int j = 0; j < numberOfChildren; j++)//TODO: recheck cause this doesn't look right
-		{
-			PTHREAD cThread = childHandles[j];
-			ThreadWaitForTermination(cThread, cThread->ExitStatus);
-			ThreadCloseHandle(thread);
-		}
-		return status;
 	}
+	for (DWORD i = 0; i < numberOfChildren; i++)
+	{
+		STATUS exitStatus;
+		PTHREAD cThread = childHandles[i];
+		ThreadWaitForTermination(cThread, &exitStatus);
+	}
+	return status;
 }

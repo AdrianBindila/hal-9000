@@ -10,7 +10,7 @@
 #include "gdtmu.h"
 #include "pe_exports.h"
 
-#define TID_INCREMENT               4
+#define TID_INCREMENT               5
 
 #define THREAD_TIME_SLICE           1
 
@@ -416,10 +416,10 @@ ThreadCreateEx(
     else
     {
         GetCurrentThread()->NumberOfChildrenCreated++;
-        _InterlockedIncrement(GetCurrentThread()->NumberOfActiveChildren);
-        LOG(" Thread [ID =%d] is the Xth thread created by" \
-            " thread [ID =%d] on CPU [%d]",
-            pThread->Id, GetCurrentThread()->Id,
+        _InterlockedIncrement(&GetCurrentThread()->NumberOfActiveChildren);
+        LOG(" Thread [ID =%d] is the %dth thread created by" \
+            " thread [ID =%d] on CPU [%d]\n",
+            pThread->Id, GetCurrentThread()->NumberOfChildrenCreated, GetCurrentThread()->Id,
             pThread->CreationCpuApicId
 			);
 
@@ -567,7 +567,7 @@ ThreadExit(
     pThread = GetCurrentThread();
     pParent = _ThreadReferenceByTid(pThread->ParentId);
 
-    LOG("Thread %d was allocated %d time quanta of length %d",
+    LOG("Thread %d was allocated %d time quanta of length %d\n",
         pThread->Id, pThread->NumberOfTimeQuantaUntilCompletion,
         pThread->NumberOfTicksPerQuantum
         );
@@ -575,22 +575,22 @@ ThreadExit(
     if (!pParent)
     {
         LOG(" Thread [ID =%d] created on CPU [ID =%d]"\
-        "is finishing on CPU [ID =%d], while it ’s parent "\
-            " thread is already destroyed !.",
+        "is finishing on CPU [ID =%d], while its parent "\
+            " thread is already destroyed !.\n",
             pThread->Id,
             pThread->CreationCpuApicId,
             GetCurrentPcpu()->ApicId);
     }
     else
     {
-        LOG(" Thread [ID =%d] created on CPU [ID =%d]"\
-            "is finishing on CPU [ID =%d], while it ’s parent "\
-            " thread [ID =%d] still has more %d child threads ",
+       LOG(" Thread [ID =%d] created on CPU [ID =%d]"\
+            "is finishing on CPU [ID =%d], while its parent "\
+            " thread [ID =%d] still has more %d child threads \n",
             pThread->Id,
             pThread->CreationCpuApicId,
             GetCurrentPcpu()->ApicId,
             pParent->Id,
-            _InterlockedDecrement(pParent->NumberOfActiveChildren));
+            _InterlockedDecrement(&pParent->NumberOfActiveChildren));
         _ThreadDereference(pParent);
     }
 

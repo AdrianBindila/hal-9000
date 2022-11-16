@@ -245,6 +245,7 @@
     <ClCompile Include="src\serial_comm.c" />
     <ClCompile Include="src\smp.c" />
     <ClCompile Include="src\syscall.c" />
+    <ClCompile Include="src\test_lp.c" />
     <ClCompile Include="src\test_priority_donation.c" />
     <ClCompile Include="src\test_priority_scheduler.c" />
     <ClCompile Include="src\test_process.c" />
@@ -264,7 +265,6 @@
     <ClCompile Include="src\os_time.c" />
     <ClCompile Include="src\vmm.c" />
     <ClCompile Include="src\vm_reservation_space.c" />
-    <ClCompile Include="test_lp.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\shared\common\mem_structures.h" />
@@ -355,6 +355,7 @@
     <ClInclude Include="headers\test_common.h" />
     <ClInclude Include="headers\test_dma.h" />
     <ClInclude Include="headers\test_file_io.h" />
+    <ClInclude Include="headers\test_lp.h" />
     <ClInclude Include="headers\test_net_stack.h" />
     <ClInclude Include="headers\test_pmm.h" />
     <ClInclude Include="headers\test_priority_donation.h" />
@@ -367,7 +368,6 @@
     <ClInclude Include="headers\um_application.h" />
     <ClInclude Include="headers\vmm.h" />
     <ClInclude Include="headers\vm_reservation_space.h" />
-    <ClInclude Include="test_lp.h" />
   </ItemGroup>
   <ItemGroup>
     <YASM Include="src\_mboot32.yasm">

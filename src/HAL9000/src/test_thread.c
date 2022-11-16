@@ -189,7 +189,8 @@ const THREAD_TEST THREADS_TEST[] =
     {   "TestThreadPriorityDonationChain", TestThreadPriorityDonationChain,
         _ThreadTestPassContext, (PVOID) 7, NULL, NULL,
         ThreadPriorityDefault, FALSE, TRUE, FALSE},
-    {"TestThreadLpTest", , _ThreadTestPassContext, (int) 5, NULL,
+
+    {"TestThreadLpTest", _ThreadLpTest, _ThreadTestPassContext,  (PVOID) 5, NULL,
     	NULL, ThreadPriorityDefault, FALSE, TRUE, FALSE},
 };
 

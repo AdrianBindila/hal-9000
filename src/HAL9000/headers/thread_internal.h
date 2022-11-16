@@ -43,9 +43,9 @@ typedef struct _THREAD
     APIC_ID                 CreationCpuApicId;
     TID                     ParentId;
     DWORD                   NumberOfChildrenCreated;
-    volatile DWORD* NumberOfActiveChildren;
-    QWORD                   NumberOfTimeQuantaUntilCompletion;
-    QWORD                   NumberOfTicksPerQuantum;
+    volatile DWORD          NumberOfActiveChildren;
+    DWORD                   NumberOfTimeQuantaUntilCompletion;
+    DWORD                   NumberOfTicksPerQuantum;
     // Currently the thread priority is not used for anything
     THREAD_PRIORITY         Priority;
     THREAD_STATE            State;
